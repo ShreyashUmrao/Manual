@@ -1,0 +1,78 @@
+-- create user
+create user xyz1@localhost identified by 'xyz1'
+
+-- TO GRANT PRIVILEGES TO THE USER CREATED
+GRANT ALL PRIVILEGES ON *.* TO 'xyz1@localhost' WITH GRANT OPTION;
+
+-- TO REMOVE ALL PRIVILEGES
+FLUSH PRIVILEGES;
+
+-- TO CREATE DATABASE
+create database dbemployee;
+
+-- TO USE DATABASE
+use dbemployee;
+
+-- TO SHOW ALL DATABASES
+show databases;
+
+-- to create table
+CREATE TABLE Employee11 (EMPNO INT ,
+ENAME VARCHAR(255) ,
+JOB VARCHAR(255) ,
+MANAGER_NO INT,
+SAL DECIMAL(10, 2) ,
+COMMISSION DECIMAL(10, 2));
+
+-- TO SHOW TABLE DETAILS 
+desc Employee11;
+
+-- TO DELETE TABLE EXISTENSE  COMPLETELY 
+drop table Employee;
+
+-- TO INSERT TABLE VALUES 
+
+INSERT INTO Employee11 (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION)
+VALUES (1, 'Ajay Kumar', 'Manager', 2, 5000.00, 1000.00);
+
+INSERT INTO Employee11 (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION)
+VALUES (2, 'Amith Kumar', 'HRManager', 4, 7000.00, 3000.00);
+
+INSERT INTO Employee11 (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION)
+VALUES (3, 'Aman Kumar', 'Tester', 8, 3000.00, 2000.00);
+
+-- TO PERMANENTLY SAVE RECORDS
+COMMIT;
+
+-- 3. Add primary key constraint and not null constraint to the employee table.
+ALTER TABLE Employee11 ADD PRIMARY KEY( EMPNO);
+
+-- NOT NULL CONSTRAINT
+ALTER TABLE Employee11 MODIFY ENAME VARCHAR(255) NOT NULL;
+
+-- TO VERIFY THE CONSTRAINT Column 'ENAME' cannot be null 
+INSERT INTO Employee11 (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION) 
+VALUES (4, 'XYZ', 'clerk' ,3, 50000, 20); 
+
+-- 4. Insert null values to the employee table and verify the result. 
+INSERT INTO Employee11 (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION) 
+VALUES (5, 'Hemath', NULL,NULL, NULL, null); 
+
+-- TO CHECK THE INSERTION WITH NULL VALUES
+SELECT * FROM Employee11;
+
+-- TO DELETE EMPLOYEE TUPLE WITH EMPNO 1 
+delete from Employee11 where EMPNO=4;
+
+-- 2. TO CHECK ROLLBACK- REVERSES THE OPERATION PERFORMED
+
+-- TO UPDATE EMPLOYEE TABLE WITH EMPNO 1
+UPDATE Employee11 SET ENAME='Amit Kumar12' where EMPNO=1;
+
+select * from Employee11;
+
+-- TO UNDO THE PREVIOUS UPDATES
+ROLLBACK;
+
+
+
