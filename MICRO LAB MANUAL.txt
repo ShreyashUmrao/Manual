@@ -1,0 +1,203 @@
+(1)
+A)
+AREA ZERO,CODE,READONLY
+   ENTRY
+   MOV R0,#0x5
+   MOV R1,#0x5
+   SUBS R2,R1,R0
+STOP B STOP
+   END
+
+B)
+AREA CARRY,CODE,READONLY
+  ENTRY
+  MOV R1,#0x80000002
+  MOVS R0,R1,LSL #1
+STOP B STOP
+  END
+
+
+C)
+AREA FLOW,CODE,READONLY
+  ENTRY
+  MOV R0,#0xF0000000
+  MOV R1,#0x80000000
+  ADDS R2,R1,R0
+STOP B STOP
+  END
+
+D)
+AREA PROGRAM,CODE,READONLY
+  ENTRY
+  MOV R0,#2
+  MOV R1,#9
+  SUBS R2,R0,R1
+STOP B STOP
+  END
+
+E)
+AREA PROGRAM,CODE,READONLY
+  ENTRY
+  LDR R0,=data1
+  LDR R1,=data2
+  LDR R2,=RESULT
+  LDR R3,[R0]
+  LDR R4,[R1]
+  ADD R5,R3,R4
+  STR R5,[R2]
+STOP B STOP
+  data1 DCD 0x11223344
+  data2 DCD 0x55667788
+AREA INFO,DATA,READWRITE
+RESULT DCD 0x0
+  END
+
+
+2)
+AREA PROGRAM,CODE,READONLY
+  ENTRY
+  MOV R4,#7
+  MOV R5,#6
+  SUBS R3,R4,R5
+  ADC R2,R4,R5
+  AND R1,R4,R5
+STOP B STOP
+  END
+
+3)
+AREA MULTIPLY,CODE,READONLY
+  ENTRY
+  MOV R0,#6400
+  MOV R1,#3200
+  MUL R2,R0,R1
+STOP B STOP
+  END
+
+
+4)
+AREA SUM,CODE,READONLY
+  ENTRY
+  MOV R0,#10
+  MOV R1,#0
+loop ADD R1,R0,R1
+  SUBS R0,#1
+  BNE loop
+STOP B STOP
+  END
+
+(5)
+A)B)
+AREA LARGEST SMALLEST,CODE,READONLY
+ ENTRY
+ MOV R5,#6
+ LDR R1,=VALUE
+ LDR R2,[R1],#4
+loop LDR R3,[R1],#4
+ CMP R2,R3
+ BHI loop1
+ MOV R2,R3
+loop1 SUBS R5,R5,#1
+ CMP R5,#0
+ BNE loop
+ LDR R4,=RESULT
+ STR R2,[R4]
+STOP B STOP
+VALUE DCD 0x44444444
+      DCD 0x22222222
+      DCD 0x11111111
+      DCD 0x33333333
+      DCD 0xAAAAAAAA
+      DCD 0x88888888
+      DCD 0x99999999
+AREA INFO,DATA,READWRITE
+RESULT DCD 0x0
+ END
+
+6)
+AREA ONEZERO,CODE,READONLY
+ ENTRY
+ MOV R2,#0
+ MOV R3,#0
+ MOV R7,#2
+ LDR R6,=VALUE
+loop MOV R1,#32
+ LDR R0,[R6],#4
+loop2 MOVS R0,R0,ROR,#1
+ BHI ONES
+ZEROS ADD R3,R3,#1
+ B loop1
+ONES ADD R2,R2,#1
+loop1 SUBS R1,R1,#1
+ BNE loop2
+ SUBS R7,R7,#1
+ CMP R7,#0
+ BNE loop
+STOP B STOP
+VALUE DCD 0x3,0x2
+ END
+
+7)
+#include<LPC214X.H>
+int main()
+{
+unsigned long int array[]={0xffff0000,0xbbbb0000,0x55550000,0x11110000};
+unsigned long int temp=0,i,j;
+for(i=0;i<3;i++)
+{
+for(j=0;j<3;j++)
+{
+if(array[j]>array[j+1])
+{
+temp=array[j];
+array[j]=array[j+1];
+array[j+1]=temp;
+}
+}
+}
+while(1);
+}
+
+8)
+#include<LPC214X.H>
+#include<stdio.h>
+int main()
+{
+unsigned int i,num=5;
+unsigned long factorial=1;
+for(i=1;i<=num;i++)
+{
+factorial *=i;
+}
+}
+
+9)
+#include<LPC214.H>
+unsigned char*msg;
+unsigned char arr[]="HELLO";
+unsigned int delay;
+int main()
+{
+while(1)
+{
+PINSEL0=0x5;
+V0LCR=0x83;
+UODLM=0x00;
+U0DLL=0x13;
+msg=arr;
+while(*msg!='\0')
+{
+while(!(U0LSR&0x20)==0x20);
+if(*msg>=97&&*msg<=122)
+{
+*msg=*msg-32;
+}
+else
+{
+*msg=*msg+32;
+}
+V0THR=*msg;
+for(delay=0;delay<=6000;delay++)
+msg++;
+}
+}
+}
